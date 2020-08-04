@@ -1,0 +1,1 @@
+WasmerOcaml.Util.foo();
