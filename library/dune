@@ -2,39 +2,31 @@
 ; !!!! This dune file is generated from the package.json file by pesy. If you modify it by hand
 ; !!!! your changes will be undone! Instead, edit the package.json and then rerun 'esy pesy' at the project root.
 ; !!!! If you want to stop using pesy and manage this file by hand, change package.json's 'esy.build' command to: refmterr dune build -p  wasmer-ocaml
-; (library
-;    ; The namespace that other packages/libraries will access this library through
-;    (name WasmerOcaml)
-;    ; Other libraries list this name in their package.json 'require' field to use this library.
-;    (public_name wasmer-ocaml.lib)
-; )
+(library
+ ; The namespace that other packages/libraries will access this library through
+ (name WasmerOcaml)
+ ; Other libraries list this name in their package.json 'require' field to use this library.
+ (public_name wasmer-ocaml.lib)
+ (libraries ctypes ctypes.stubs)
+ (flags -cclib /Users/s/code/wasmer-ocaml-2/libwasmer.a)
+ (foreign_stubs
+  (language c)
+  (names wasmer_stubgen)
+  (include_dirs
+   (lib ctypes))))
 
-(executable
- (name stubgen)
- (package wasmer-ocaml)
- ; (modules stubgen)
- (public_name stubgen.exe)
- (libraries
-   ; reason-skia.wrapped.bindings
-   ctypes
-ctypes.stubs))
+(rule
+ (targets Wasmer_stubgen.ml)
+ (deps ../bindings/stubgen.exe)
+ (action
+  (with-stdout-to
+    %{targets}
+   (run %{deps} -ml))))
 
-; (executable
-;  (name types_stubgen)
-;  (package reason-skia)
-;  (modules types_stubgen)
-;  (public_name types_stubgen.exe)
-;  (libraries reason-skia.wrapped.types ctypes.stubs ctypes))
-
-; (rule
-;  (targets ml_types_stubgen.c)
-;  (deps ./types_stubgen.exe)
-;  (action (with-stdout-to %{targets} (run %{deps}))))
-
-(rule (targets ctypes_path.txt)
- (action (with-stdout-to %{targets} (run ocamlfind query ctypes))))
-
-; (rule
-;  (targets ml_types_stubgen.exe)
-;  (deps    (:c ./ml_types_stubgen.c) (:ctypes_path ctypes_path.txt) ../c/libskia_wrapped_c_stubs.a)
-;  (action (run %{cc} %{c} %{read-lines:../c/c_flags.txt} -I%{read-lines:ctypes_path.txt} -I%{ocaml_where} -o %{targets})))
+(rule
+ (targets wasmer_stubgen.c)
+ (deps ../bindings/stubgen.exe)
+ (action
+  (with-stdout-to
+    %{targets}
+   (run %{deps} -c))))

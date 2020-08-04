@@ -1,4 +1,4 @@
-let prefix = "wasmer_wrapped_stub"
+let prefix = "wasmer"
 
 let prologue = "
 #include \"wasmer.h\"
@@ -17,7 +17,7 @@ let () =
   | true, true ->
     failwith "Exactly one of -ml and -c must be specified"
   | true, false ->
-    Cstubs.write_ml Format.std_formatter ~prefix (module WasmerWrappedBindings.M)
+    Cstubs.write_ml Format.std_formatter ~prefix (module WasmerBindings.M)
   | false, true ->
     print_endline prologue;
-    Cstubs.write_c Format.std_formatter ~prefix (module WasmerWrappedBindings.M)
+    Cstubs.write_c Format.std_formatter ~prefix (module WasmerBindings.M)

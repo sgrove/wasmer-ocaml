@@ -1,0 +1,6 @@
+(executable
+ (name stubgen)
+ (package wasmer-ocaml)
+ (modules Stubgen WasmerBindings)
+ (public_name stubgen.exe)
+ (libraries ctypes ctypes.stubs))

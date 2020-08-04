@@ -1,2 +1,2 @@
-(lang dune 1.6)
- (name wasmer-ocaml)
+(lang dune 2.0)
+(name wasmer-ocaml)

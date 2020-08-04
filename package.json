@@ -22,7 +22,8 @@
   },
   "scripts": {
     "pesy": "bash -c 'env PESY_MODE=update pesy'",
-    "test": "esy x TestWasmerOcaml.exe"
+    "test": "esy x TestWasmerOcaml.exe",
+    "start": "nodemon --delay '200ms' --watch ./ --watch ppx/ --watch vendor/ -e re,ml,sql --exec 'build.sh'"
   },
   "dependencies": {
     "@esy-ocaml/reason": "*",
@@ -32,6 +33,7 @@
   },
   "devDependencies": {
     "@opam/merlin": "3.3.4",
+    "nodemon": "*",
     "ocaml": "4.10.0",
     "refmterr": "*",
     "pesy": "*",
