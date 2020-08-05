@@ -1,10 +1,14 @@
 {
   "ocaml.sandbox": {
-    "root": "/home/eduardo/mac/wasmer-ocaml",
+    "root": "/home/eduardo/reason/wasmer-ocaml",
     "kind": "esy"
   },
   "files.associations": {
     "*.mlp": "ocaml",
-    "typeinfo": "cpp"
+    "typeinfo": "cpp",
+    "array": "cpp",
+    "string": "cpp",
+    "string_view": "cpp",
+    "ranges": "cpp"
   }
 }

@@ -5,17 +5,28 @@
   "esy": {
     "build": "dune build -p <PACKAGE_NAME>",
     "buildDev": "pesy",
-    "release": { "releasedBinaries": [ "WasmerOcamlApp.exe" ] }
+    "release": {
+      "releasedBinaries": [
+        "WasmerOcamlApp.exe"
+      ]
+    }
   },
   "buildDirs": {
     "test": {
-      "require": [ "wasmer-ocaml.lib" ],
+      "require": [
+        "wasmer-ocaml.lib"
+      ],
       "main": "TestWasmerOcaml",
       "name": "TestWasmerOcaml.exe"
     },
-    "library": { "name": "wasmer-ocaml.lib", "namespace": "WasmerOcaml" },
+    "library": {
+      "name": "wasmer-ocaml.lib",
+      "namespace": "WasmerOcaml"
+    },
     "executable": {
-      "require": [ "wasmer-ocaml.lib" ],
+      "require": [
+        "wasmer-ocaml.lib"
+      ],
       "main": "WasmerOcamlApp",
       "name": "WasmerOcamlApp.exe"
     }
@@ -23,10 +34,8 @@
   "scripts": {
     "pesy": "bash -c 'env PESY_MODE=update pesy'",
     "test": "esy x TestWasmerOcaml.exe",
-    "start":
-      "nodemon --delay '100ms' --watch bindings/ --watch library/ --watch executable/ -e re --exec './build.sh'",
-    "c_stub":
-      "nodemon --delay '100ms' --watch bindings/ -e re --exec './bindings.sh'"
+    "start": "nodemon --delay '100ms' --watch bindings/ --watch library/ --watch executable/ -e re --exec './build.sh'",
+    "c_stub": "nodemon --delay '100ms' --watch bindings/ -e re --exec './bindings.sh'"
   },
   "dependencies": {
     "@esy-ocaml/reason": "*",
@@ -40,6 +49,7 @@
     "ocaml": "4.10.0",
     "refmterr": "*",
     "pesy": "*",
-    "@opam/merlin": "*"
+    "@opam/merlin": "*",
+    "@opam/ocaml-lsp-server": "ocaml/ocaml-lsp:ocaml-lsp-server.opam"
   }
 }
