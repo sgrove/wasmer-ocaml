@@ -1,4 +1,5 @@
 open Ctypes;
+
 module M = (F: FOREIGN) => {
   open F;
   let wasm_engine: typ(structure([ | `engine])) =
@@ -58,6 +59,10 @@ module M = (F: FOREIGN) => {
       "wasm_functype_new_0_0",
       void @-> returning(ptr(wasm_functype)),
     );
+  let wasm_functype_delete = foreign(
+    "wasm_functype_delete",
+    ptr(wasm_functype) @-> returning(void),
+  );
 
   /* Func */
   type wasm_func;
