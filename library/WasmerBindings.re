@@ -17,6 +17,7 @@ module Vector =
   let data = field(t, "data", ptr(T.data));
   seal(t);
 
+  let make = _initializer => Ctypes.allocate_n(t, ~count=1);
   let new_uninitialized =
     foreign(
       name ++ "_new_uninitialized",

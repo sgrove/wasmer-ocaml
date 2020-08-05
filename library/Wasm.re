@@ -11,24 +11,30 @@ module type Vector_S = {
   let size: field(size_t, t);
   let data: field(ptr(data), t);
 
-  let new_uninitialized: (ptr(t), size_t) => unit;
-  let delete: ptr(t) => unit;
+  let make: size_t => ptr(t);
 };
-
 let finalise = (callback, value) => {
   Gc.finalise(callback, value);
   value;
 };
 
-let makeByteVec = () => {
-  let vec = Ctypes.allocate_n(~count=1, Byte_vec.t);
-  finalise(Byte_vec.delete, vec);
+module Patch_vector =
+       (
+         V: {
+           include Vector_S;
+           let new_uninitialized: (ptr(t), size_t) => unit;
+           let delete: ptr(t) => unit;
+         },
+       ) => {
+  include V;
+  let make = size => {
+    let ptr = Ctypes.allocate_n(~finalise=delete, t, ~count=1);
+    new_uninitialized(ptr, size);
+    ptr;
+  };
 };
-
-let makeExternVec = () => {
-  let vec = Ctypes.allocate_n(~count=1, Extern_vec.t);
-  finalise(Extern_vec.delete, vec);
-};
+module Byte_vec = Patch_vector(Byte_vec);
+module Extern_vec = Patch_vector(Extern_vec);
 
 let module_new = (store, binary) => {
   let store_ptr = Root.create(store);

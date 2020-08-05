@@ -12,8 +12,7 @@ module type Vector_S = {
   let size: field(size_t, t);
   let data: field(ptr(data), t);
 
-  let new_uninitialized: (ptr(t), size_t) => unit;
-  let delete: ptr(t) => unit;
+  let make: size_t => ptr(t);
 };
 
 type wasm_engine;
@@ -34,7 +33,6 @@ type wasm_functype;
 let functype: typ(wasm_functype);
 let functype_size: field(size_t, wasm_functype);
 let functype_new_0_0: unit => ptr(wasm_functype);
-let functype_delete: ptr(wasm_functype) => unit;
 type wasm_val;
 let val_: typ(wasm_val);
 let val_kind: field(size_t, wasm_val);
@@ -53,7 +51,6 @@ let func_new:
     (ptr(wasm_val), ptr(wasm_val)) => ptr(wasm_trap)
   ) =>
   ptr(wasm_func);
-let func_delete: ptr(wasm_func) => unit;
 type wasm_extern;
 let extern: typ(wasm_extern);
 let extern_addr: wasm_extern => ptr(wasm_extern);
@@ -69,8 +66,5 @@ let instance_new:
   ptr(wasm_instance);
 let instance_exports: (ptr(wasm_instance), ptr(Extern_vec.t)) => unit;
 let func_call: (ptr(wasm_func), ptr(wasm_val), ptr(wasm_val)) => ptr(unit);
-
-let makeByteVec: unit => ptr(Byte_vec.t);
-let makeExternVec: unit => ptr(Extern_vec.t);
 
 let val_null: ptr(wasm_val);
