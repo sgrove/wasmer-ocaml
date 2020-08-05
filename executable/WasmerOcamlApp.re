@@ -14,6 +14,9 @@ let main = () => {
   let engine = Lib.wasm_engine_new();
   print_endline(Format.sprintf("Made an engine"));
   let store = Lib.wasm_store_new(engine);
+  if (Ctypes.raw_address_of_ptr(Ctypes.to_voidp(store)) == 0n) {
+    failwith("failed to create store");
+  };
   print_endline(Format.sprintf("Made a store from the engine"));
 
   let binary = Lib.makeByteVec();
@@ -21,6 +24,13 @@ let main = () => {
   Lib.wasm_byte_vec_new_uninitialized(
     binary,
     Unsigned.Size_t.of_int(wasmBlobSize),
+  );
+
+  let data_buffer = Ctypes.CArray.of_string(wasmBlob);
+  Ctypes.setf(
+    Ctypes.(!@binary),
+    Lib.wasm_byte_vec_data,
+    data_buffer |> Ctypes.CArray.start,
   );
 
   let binarySize = Ctypes.getf(Ctypes.(!@binary), Lib.wasm_byte_vec_size);
@@ -33,7 +43,9 @@ let main = () => {
   print_endline(Format.sprintf("Compiling module..."));
 
   let wasm_module = Lib.wasm_module_new(store, binary);
-
+  if (Ctypes.raw_address_of_ptr(Ctypes.to_voidp(wasm_module)) == 0n) {
+    failwith("failed to create module");
+  };
   Format.sprintf("Creating callback") |> print_endline;
   let hello_type = Lib.wasm_functype_new_0_0();
   Format.sprintf("Created functype") |> print_endline;

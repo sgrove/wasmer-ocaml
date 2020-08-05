@@ -22,7 +22,7 @@ module M = (F: FOREIGN) => {
     structure("wasm_byte_vec_t");
 
   let wasm_byte_vec_size = field(wasm_byte_vec, "size", size_t);
-  let wasm_byte_vec_data = field(wasm_byte_vec, "data", ptr(void));
+  let wasm_byte_vec_data = field(wasm_byte_vec, "data", ptr(char));
   let () = seal(wasm_byte_vec);
 
   let wasm_byte_vec_new_uninitialized =
