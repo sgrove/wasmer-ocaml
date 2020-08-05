@@ -1,4 +1,6 @@
 open Ctypes;
+open Foreign;
+
 module M = (F: FOREIGN) => {
   open F;
   let wasm_engine: typ(structure([ | `engine])) =
@@ -37,7 +39,7 @@ module M = (F: FOREIGN) => {
   let wasm_module_size = field(wasm_module, "size", size_t);
   let () = seal(wasm_module);
 
-  //  WASM_API_EXTERN void wasm_##name##_vec_new_uninitialized
+  /*  WASM_API_EXTERN void wasm_##name##_vec_new_uninitialized */
   let wasm_module_new =
     foreign(
       "wasm_module_new",
@@ -58,6 +60,20 @@ module M = (F: FOREIGN) => {
       "wasm_functype_new_0_0",
       void @-> returning(ptr(wasm_functype)),
     );
+  let wasm_functype_delete =
+    foreign("wasm_functype_delete", ptr(wasm_functype) @-> returning(void));
+
+  /* Val */
+  type wasm_val;
+  let wasm_val: typ(structure(wasm_val)) = structure("wasm_val_t");
+  let wasm_val_kind = field(wasm_val, "kind", size_t);
+  let () = seal(wasm_val);
+
+  /* Trap */
+  type wasm_trap;
+  let wasm_trap: typ(structure(wasm_trap)) = structure("wasm_trap_t");
+  let wasm_trap_size = field(wasm_trap, "size", size_t);
+  let () = seal(wasm_trap);
 
   /* Func */
   type wasm_func;
@@ -66,7 +82,14 @@ module M = (F: FOREIGN) => {
   let () = seal(wasm_func);
 
   let wasm_func_0_0_callback =
-    Ctypes.static_funptr(Ctypes_static.(void @-> returning(void)));
+    typedef(
+      funptr(
+        Ctypes.(
+          ptr(wasm_val) @-> ptr(wasm_val) @-> returning(ptr(wasm_trap))
+        ),
+      ),
+      "wasm_func_callback_t",
+    );
 
   let wasm_func_new =
     foreign(
@@ -75,5 +98,36 @@ module M = (F: FOREIGN) => {
       @-> ptr(wasm_functype)
       @-> wasm_func_0_0_callback
       @-> returning(ptr(wasm_func)),
+    );
+  let wasm_func_delete =
+    foreign("wasm_func_delete", ptr(wasm_func) @-> returning(void));
+
+  /* Extern */
+  type wasm_extern;
+  let wasm_extern: typ(structure(wasm_extern)) = structure("wasm_extern_t");
+  let wasm_extern_size = field(wasm_extern, "size", size_t);
+  let () = seal(wasm_extern);
+
+  let wasm_func_as_extern =
+    foreign(
+      "wasm_func_as_extern",
+      ptr(wasm_func) @-> returning(ptr(wasm_extern)),
+    );
+
+  /* Instance */
+  type wasm_instance;
+  let wasm_instance: typ(structure(wasm_instance)) =
+    structure("wasm_instance_t");
+  let wasm_instance_size = field(wasm_instance, "size", size_t);
+  let () = seal(wasm_instance);
+
+  let wasm_instance_new =
+    foreign(
+      "wasm_instance_new",
+      ptr(wasm_store)
+      @-> ptr(wasm_module)
+      @-> ptr(ptr(wasm_extern))
+      @-> ptr(void)
+      @-> returning(ptr(wasm_instance)),
     );
 };

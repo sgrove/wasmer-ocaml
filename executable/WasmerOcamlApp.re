@@ -34,16 +34,32 @@ let main = () => {
 
   let wasm_module = Lib.wasm_module_new(store, binary);
 
-  Format.sprintf("Done. Deleting binary...") |> print_endline;
-
-  Lib.wasm_byte_vec_delete(binary);
-  Format.sprintf("Deleted") |> print_endline;
   Format.sprintf("Creating callback") |> print_endline;
   let hello_type = Lib.wasm_functype_new_0_0();
   Format.sprintf("Created functype") |> print_endline;
 
-  /* let hello_func = Lib.wasm_func_new(store, hello_type, hello_callback); */
-  /* Format.sprintf("Created callback") |> print_endline; */
+  let hello_callback = (_, _) => {
+    Printf.printf("HELLO MAN\n");
+    Ctypes.coerce(
+      Ctypes.ptr(Ctypes.void),
+      Ctypes.ptr(Lib.wasm_trap),
+      Ctypes.null,
+    );
+  };
+  let hello_func = Lib.wasm_func_new(store, hello_type, hello_callback);
+  Format.sprintf("Created callback") |> print_endline;
+
+  Format.sprintf("Instantiating module...\n") |> print_endline;
+  let imports = Ctypes.CArray.make(Ctypes.ptr(Lib.wasm_extern), 1);
+  Ctypes.CArray.set(imports, 0, Lib.wasm_func_as_extern(hello_func));
+
+  let instance =
+    Lib.wasm_instance_new(
+      store,
+      wasm_module,
+      imports |> Ctypes.CArray.start,
+      Ctypes.null,
+    );
   ();
 };
 
