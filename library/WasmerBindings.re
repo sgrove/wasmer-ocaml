@@ -16,6 +16,7 @@ module M = (F: FOREIGN) => {
       ptr(wasm_engine) @-> returning(ptr(wasm_store)),
     );
 
+  /* Byte */
   type wasm_byte_vec;
 
   let wasm_byte_vec: typ(structure(wasm_byte_vec)) =
@@ -113,6 +114,21 @@ module M = (F: FOREIGN) => {
       "wasm_func_as_extern",
       ptr(wasm_func) @-> returning(ptr(wasm_extern)),
     );
+  let wasm_extern_as_func =
+    foreign(
+      "wasm_extern_as_func",
+      ptr(wasm_extern) @-> returning(ptr(wasm_func)),
+    );
+
+  type wasm_extern_vec;
+
+  let wasm_extern_vec: typ(structure(wasm_extern_vec)) =
+    structure("wasm_extern_vec_t");
+
+  let wasm_extern_vec_size = field(wasm_extern_vec, "size", size_t);
+  let wasm_extern_vec_data =
+    field(wasm_extern_vec, "data", ptr(ptr(wasm_extern)));
+  let () = seal(wasm_extern_vec);
 
   /* Instance */
   type wasm_instance;
@@ -129,5 +145,21 @@ module M = (F: FOREIGN) => {
       @-> ptr(ptr(wasm_extern))
       @-> ptr(void)
       @-> returning(ptr(wasm_instance)),
+    );
+
+  let wasm_instance_exports =
+    foreign(
+      "wasm_instance_exports",
+      ptr(wasm_instance) @-> ptr(wasm_extern_vec) @-> returning(void),
+    );
+
+  /* Call */
+  let wasm_func_call =
+    foreign(
+      "wasm_func_call",
+      ptr(wasm_func)
+      @-> ptr(wasm_val)
+      @-> ptr(wasm_val)
+      @-> returning(ptr(void)),
     );
 };

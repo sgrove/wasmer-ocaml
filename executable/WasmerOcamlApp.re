@@ -1,7 +1,4 @@
-let hello_callback = () => {
-  print_endline("Calling back...");
-  print_endline("> Hello World!");
-};
+open Ctypes;
 
 let main = () => {
   open WasmerOcaml;
@@ -72,7 +69,24 @@ let main = () => {
       imports |> Ctypes.CArray.start,
       Ctypes.null,
     );
-  ();
+  if (Ctypes.raw_address_of_ptr(Ctypes.to_voidp(instance)) == 0n) {
+    failwith("failed to create instance");
+  };
+
+  let exports = Lib.makeExternVec();
+  Lib.wasm_instance_exports(instance, exports);
+  let exports_size =
+    Ctypes.getf(!@exports, Lib.wasm_extern_vec_size) |> Unsigned.Size_t.to_int;
+  if (exports_size == 0) {
+    failwith("no exports found");
+  };
+  Format.sprintf("Found %d exports\n", exports_size) |> print_endline;
+
+  let exports_data =
+    CArray.from_ptr(Ctypes.getf(!@exports, Lib.wasm_extern_vec_data), 1);
+  let run_func = CArray.get(exports_data, 0) |> Lib.wasm_extern_as_func;
+
+  Lib.wasm_func_call(run_func, Lib.wasm_val_null, Lib.wasm_val_null);
 };
 
 main();
