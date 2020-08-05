@@ -60,7 +60,7 @@ let extern_addr: wasm_extern => ptr(wasm_extern);
 let extern_size: field(size_t, wasm_extern);
 let func_as_extern: ptr(wasm_func) => ptr(wasm_extern);
 let extern_as_func: ptr(wasm_extern) => ptr(wasm_func);
-module Extern_vec: Vector_S with type data = wasm_extern;
+module Extern_vec: Vector_S with type data = ptr(wasm_extern);
 type wasm_instance;
 let instance: typ(wasm_instance);
 let instance_size: field(size_t, wasm_instance);

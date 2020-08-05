@@ -127,8 +127,8 @@ module M = (F: FOREIGN) => {
     Vector(
       F,
       {
-        type data = wasm_extern;
-        let data = extern;
+        type data = ptr(wasm_extern);
+        let data = ptr(extern);
         let name = "wasm_extern";
       },
     );
