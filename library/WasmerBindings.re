@@ -1,4 +1,5 @@
 open Ctypes;
+open Foreign;
 
 module M = (F: FOREIGN) => {
   open F;
@@ -71,7 +72,7 @@ module M = (F: FOREIGN) => {
   let () = seal(wasm_func);
 
   let wasm_func_0_0_callback =
-    Ctypes.static_funptr(Ctypes_static.(void @-> returning(void)));
+    funptr(Ctypes.(void @-> returning(void)));
 
   let wasm_func_new =
     foreign(
@@ -81,4 +82,6 @@ module M = (F: FOREIGN) => {
       @-> wasm_func_0_0_callback
       @-> returning(ptr(wasm_func)),
     );
+  let wasm_func_delete = foreign("wasm_func_delete", ptr(wasm_func) @-> returning(void));
+
 };

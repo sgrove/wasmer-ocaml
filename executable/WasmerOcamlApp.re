@@ -42,8 +42,9 @@ let main = () => {
   let hello_type = Lib.wasm_functype_new_0_0();
   Format.sprintf("Created functype") |> print_endline;
 
-  /* let hello_func = Lib.wasm_func_new(store, hello_type, hello_callback); */
-  /* Format.sprintf("Created callback") |> print_endline; */
+  let hello_callback = () => Printf.printf("HELLO MAN");
+  let hello_func = Lib.wasm_func_new(store, hello_type, hello_callback);
+  Format.sprintf("Created callback") |> print_endline;
   ();
 };
 

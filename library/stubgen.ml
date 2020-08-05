@@ -1,3 +1,4 @@
+open Bindings
 let prefix = "wasm"
 
 let prologue = "
@@ -17,7 +18,7 @@ let () =
   | true, true ->
     failwith "Exactly one of -ml and -c must be specified"
   | true, false ->
-    Cstubs.write_ml Format.std_formatter ~prefix (module Test_bindings.WasmerBindings.M)
+    Cstubs.write_ml Format.std_formatter ~prefix (module WasmerBindings.M)
   | false, true ->
     print_endline prologue;
-    Cstubs.write_c Format.std_formatter ~prefix (module Test_bindings.WasmerBindings.M)
+    Cstubs.write_c Format.std_formatter ~prefix (module WasmerBindings.M)
