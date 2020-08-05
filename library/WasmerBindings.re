@@ -1,20 +1,20 @@
 open Ctypes;
 open Foreign;
-
 module Vector =
        (F: FOREIGN, T: {
-                      type t;
-                      let t: Ctypes.typ(t);
+                      type data;
+                      let data: typ(data);
                       let name: string;
                     }) => {
   open F;
   open T;
-  type nonrec t = typ(structure(t));
+  type data = T.data;
+  type t = structure(data);
   let name = name ++ "_vec";
-  let t: typ(structure(t)) = structure(name ++ "_t");
+  let t: typ(t) = structure(name ++ "_t");
 
   let size = field(t, "size", size_t);
-  let data = field(t, "data", ptr(T.t));
+  let data = field(t, "data", ptr(T.data));
   seal(t);
 
   let new_uninitialized =
@@ -28,30 +28,32 @@ module Vector =
 module M = (F: FOREIGN) => {
   open F;
 
-  let engine: typ(structure([ | `engine])) = structure("wasm_engine_t");
+  type wasm_engine = structure([ | `engine]);
+  let engine: typ(wasm_engine) = structure("wasm_engine_t");
   let engine_new =
     foreign("wasm_engine_new", void @-> returning(ptr(engine)));
 
-  let store: typ(structure([ | `store])) = structure("wasm_store_t");
+  type wasm_store = structure([ | `store]);
+  let store: typ(wasm_store) = structure("wasm_store_t");
 
   let store_new =
     foreign("wasm_store_new", ptr(engine) @-> returning(ptr(store)));
 
   /* Byte */
-  type byte;
+  type byte = char;
 
   module Byte_vec =
     Vector(
       F,
       {
-        type t = char;
-        let t = char;
+        type data = char;
+        let data = char;
         let name = "wasm_byte";
       },
     );
 
-  type wasm_module;
-  let module_: typ(structure(wasm_module)) = structure("wasm_module_t");
+  type wasm_module = structure([ | `Module]);
+  let module_: typ(wasm_module) = structure("wasm_module_t");
   let module_size = field(module_, "size", size_t);
   let () = seal(module_);
 
@@ -64,9 +66,8 @@ module M = (F: FOREIGN) => {
     );
 
   /* Functype */
-  type wasm_functype;
-  let functype: typ(structure(wasm_functype)) =
-    structure("wasm_functype_t");
+  type wasm_functype = structure([ | `Functype]);
+  let functype: typ(wasm_functype) = structure("wasm_functype_t");
   let functype_size = field(functype, "size", size_t);
   let () = seal(functype);
 
@@ -76,20 +77,20 @@ module M = (F: FOREIGN) => {
     foreign("wasm_functype_delete", ptr(functype) @-> returning(void));
 
   /* Val */
-  type wasm_val;
-  let val_: typ(structure(wasm_val)) = structure("wasm_val_t");
+  type wasm_val = structure([ | `Val]);
+  let val_: typ(wasm_val) = structure("wasm_val_t");
   let val_kind = field(val_, "kind", size_t);
   let () = seal(val_);
 
   /* Trap */
-  type wasm_trap;
-  let trap: typ(structure(wasm_trap)) = structure("wasm_trap_t");
+  type wasm_trap = structure([ | `trap]);
+  let trap: typ(wasm_trap) = structure("wasm_trap_t");
   let trap_size = field(trap, "size", size_t);
   let () = seal(trap);
 
   /* Func */
-  type wasm_func;
-  let func: typ(structure(wasm_func)) = structure("wasm_func_t");
+  type wasm_func = structure([ | `Func]);
+  let func: typ(wasm_func) = structure("wasm_func_t");
   let func_size = field(func, "size", size_t);
   let () = seal(func);
 
@@ -111,8 +112,9 @@ module M = (F: FOREIGN) => {
     foreign("wasm_func_delete", ptr(func) @-> returning(void));
 
   /* Extern */
-  type wasm_extern;
-  let extern: typ(structure(wasm_extern)) = structure("wasm_extern_t");
+  type wasm_extern = structure([ | `Extern]);
+  let extern: typ(wasm_extern) = structure("wasm_extern_t");
+  let extern_addr = Ctypes.addr;
   let extern_size = field(extern, "size", size_t);
   let () = seal(extern);
 
@@ -125,15 +127,14 @@ module M = (F: FOREIGN) => {
     Vector(
       F,
       {
-        type t = ptr(structure(wasm_extern));
-        let t = ptr(extern);
+        type data = wasm_extern;
+        let data = extern;
         let name = "wasm_extern";
       },
     );
   /* Instance */
-  type wasm_instance;
-  let instance: typ(structure(wasm_instance)) =
-    structure("wasm_instance_t");
+  type wasm_instance = structure([ | `Instance]);
+  let instance: typ(wasm_instance) = structure("wasm_instance_t");
   let instance_size = field(instance, "size", size_t);
   let () = seal(instance);
 

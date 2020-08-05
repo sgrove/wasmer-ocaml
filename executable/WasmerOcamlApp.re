@@ -85,7 +85,8 @@ let main = () => {
 
   let exports_data =
     CArray.from_ptr(Ctypes.getf(!@exports, Wasm.Extern_vec.data), 1);
-  let run_func = CArray.get(exports_data, 0) |> Wasm.extern_as_func;
+  let run_func =
+    CArray.get(exports_data, 0) |> Wasm.extern_addr |> Wasm.extern_as_func;
 
   Wasm.func_call(run_func, Wasm.val_null, Wasm.val_null);
 };

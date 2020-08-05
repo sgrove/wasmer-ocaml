@@ -1,6 +1,20 @@
 include Bindings.WasmerBindings.M(Wasmer_stubgen);
 open Ctypes;
 
+type size_t = Unsigned.Size_t.t;
+
+module type Vector_S = {
+  type data;
+  type t = structure(data);
+  let t: typ(t);
+
+  let size: field(size_t, t);
+  let data: field(ptr(data), t);
+
+  let new_uninitialized: (ptr(t), size_t) => unit;
+  let delete: ptr(t) => unit;
+};
+
 let finalise = (callback, value) => {
   Gc.finalise(callback, value);
   value;
