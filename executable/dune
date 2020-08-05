@@ -8,4 +8,5 @@
    ; The name of the executable (runnable via esy x WasmerOcamlApp.exe) 
    (public_name WasmerOcamlApp.exe)  ;  From package.json name field
    (libraries  wasmer-ocaml.lib ) ;  From package.json require field (array of strings)
+ (flags (:standard -warn-error -A))
 )

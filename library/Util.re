@@ -1,5 +1,16 @@
-let foo = () =>
-  print_endline(
-    "Hello, "
-    ++ (Wasmer_stubgen.wasmer_1_wasmer_last_error_length() |> string_of_int),
-  );
+let readFile = filename => {
+  let lines = ref([]);
+  let chan = open_in(filename);
+  try(
+    {
+      while (true) {
+        lines := [input_line(chan), ...lines^];
+      };
+      lines^ |> String.concat("\n");
+    }
+  ) {
+  | End_of_file =>
+    close_in(chan);
+    List.rev(lines^) |> String.concat("\n");
+  };
+};

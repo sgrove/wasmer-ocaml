@@ -7,17 +7,31 @@
  (name WasmerOcaml)
  ; Other libraries list this name in their package.json 'require' field to use this library.
  (public_name wasmer-ocaml.lib)
- (libraries ctypes ctypes.stubs)
+ (libraries ctypes ctypes.stubs wasmer-ocaml.test_bindings)
  (flags -cclib /Users/s/code/wasmer-ocaml-2/libwasmer.a)
+ (modules Wasmer_stubgen Util Lib)
  (foreign_stubs
   (language c)
   (names wasmer_stubgen)
   (include_dirs
    (lib ctypes))))
 
+(library
+ (name test_bindings)
+ (public_name wasmer-ocaml.test_bindings)
+ (modules WasmerBindings)
+ (libraries ctypes ctypes.stubs))
+
+(executable
+ (name stubgen)
+ (package wasmer-ocaml)
+ (modules Stubgen)
+ (public_name stubgen.exe)
+ (libraries ctypes ctypes.stubs wasmer-ocaml.test_bindings))
+
 (rule
  (targets Wasmer_stubgen.ml)
- (deps ../bindings/stubgen.exe)
+ (deps stubgen.exe)
  (action
   (with-stdout-to
     %{targets}
@@ -25,8 +39,10 @@
 
 (rule
  (targets wasmer_stubgen.c)
- (deps ../bindings/stubgen.exe)
+ (deps stubgen.exe)
  (action
   (with-stdout-to
     %{targets}
    (run %{deps} -c))))
+
+
