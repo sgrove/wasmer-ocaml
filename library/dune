@@ -1,15 +1,15 @@
-
 ; !!!! This dune file is generated from the package.json file by pesy. If you modify it by hand
 ; !!!! your changes will be undone! Instead, edit the package.json and then rerun 'esy pesy' at the project root.
 ; !!!! If you want to stop using pesy and manage this file by hand, change package.json's 'esy.build' command to: refmterr dune build -p  wasmer-ocaml
+
 (library
  ; The namespace that other packages/libraries will access this library through
  (name WasmerOcaml)
  ; Other libraries list this name in their package.json 'require' field to use this library.
  (public_name wasmer-ocaml.lib)
  (libraries ctypes ctypes.stubs wasmer-ocaml.bindings)
- (flags -cclib /Users/eduardo/workspace/wasmer-ocaml/library/libwasmer.a)
- (modules Wasmer_stubgen Util Lib)
+ (flags -cclib "-L /home/eduardo/reason/wasmer-ocaml/library -lwasmer")
+ (modules Wasmer_stubgen Util Wasm)
  (foreign_stubs
   (language c)
   (names wasmer_stubgen)
@@ -34,7 +34,7 @@
  (deps stubgen.exe)
  (action
   (with-stdout-to
-    %{targets}
+   %{targets}
    (run %{deps} -ml))))
 
 (rule
@@ -42,7 +42,5 @@
  (deps stubgen.exe)
  (action
   (with-stdout-to
-    %{targets}
+   %{targets}
    (run %{deps} -c))))
-
-
