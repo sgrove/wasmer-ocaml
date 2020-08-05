@@ -23,24 +23,23 @@
   "scripts": {
     "pesy": "bash -c 'env PESY_MODE=update pesy'",
     "test": "esy x TestWasmerOcaml.exe",
-    "start": "nodemon --delay '100ms' --watch bindings/ --watch library/ --watch executable/ -e re --exec './build.sh'",
-    "c_stub": "nodemon --delay '100ms' --watch bindings/ -e re --exec './bindings.sh'"
+    "start":
+      "nodemon --delay '100ms' --watch bindings/ --watch library/ --watch executable/ -e re --exec './build.sh'",
+    "c_stub":
+      "nodemon --delay '100ms' --watch bindings/ -e re --exec './bindings.sh'"
   },
   "dependencies": {
     "@esy-ocaml/reason": "*",
     "@opam/ctypes": "0.17.1",
+    "@opam/ctypes-foreign": "0.4.0",
     "@opam/dune": ">=1.6.0",
     "ocaml": "^4.10.0"
   },
   "devDependencies": {
-    "@opam/merlin": "3.3.4",
     "nodemon": "*",
     "ocaml": "4.10.0",
     "refmterr": "*",
     "pesy": "*",
     "@opam/merlin": "*"
-  },
-  "resolutions": {
-    "@opam/ctypes": "avsm/ocaml-ctypes:ctypes.opam#96700a9886dfea4551192b2cc75de9d1e845b859"
   }
 }
